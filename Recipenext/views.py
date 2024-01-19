@@ -13,7 +13,18 @@ from Recipenext.serializers import UserSerializer, RecipeSerializer
 @csrf_exempt
 def userApi(request, id=0):
     if request.method == "GET":
-        users = User.objects.all()
+        # Check if the request contains a query parameter 'email'
+        email_query = request.GET.get("email", None)
+
+        print("query", email_query)
+
+        if email_query:
+            # If 'email' parameter is present, filter users by email
+            users = User.objects.filter(email=email_query)
+        else:
+            # If 'email' parameter is not present, return all users
+            users = User.objects.all()
+
         users_serializer = UserSerializer(users, many=True)
         return JsonResponse(users_serializer.data, safe=False)
     elif request.method == "POST":
