@@ -30,9 +30,36 @@ def userApi(request, id=0):
         if user_serializer.is_valid():
             user_serializer.save()
             return JsonResponse("Updated Successfully", safe=False)
-        return JsonResponse("Failed To update")
+        return JsonResponse("Failed To update", safe=False)
     elif request.method == "DELETE":
         user = User.objects.get(id=id)
         user.delete()
         return JsonResponse("Deleted successfully", safe=False)
-    return JsonResponse("Failed to delete")
+    return JsonResponse("Failed to delete", safe=False)
+
+
+def recipeApi(request, id=0):
+    if request.method == "GET":
+        recipes = Recipe.objects.all()
+        recipe_serializer = RecipeSerializer(recipes, many=True)
+        return JsonResponse(recipe_serializer.data, safe=False)
+    elif request.method == "POST":
+        recipe_data = JSONParser().parse(request)
+        recipe_serializer = RecipeSerializer(data=recipe_data)
+        if recipe_serializer.is_valid():
+            recipe_serializer.save()
+            return JsonResponse("Recipe Successfully Created", safe=False)
+        return JsonResponse("Failed to create", safe=False)
+    elif request.method == "PUT":
+        recipe_data = JSONParser().parse(request)
+        recipe = Recipe.objects.get(id=recipe_data["id"])
+        recipe_serializer = RecipeSerializer(recipe, data=recipe_data)
+        if recipe_serializer.is_valid():
+            recipe_serializer.save()
+            return JsonResponse("Updated Successfully", safe=False)
+        return JsonResponse("Failed To update", safe=False)
+    elif request.method == "DELETE":
+        recipe = Recipe.objects.get(id=id)
+        recipe.delete()
+        return JsonResponse("Deleted successfully", safe=False)
+    return JsonResponse("Failed to delete", safe=False)

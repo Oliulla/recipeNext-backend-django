@@ -1,5 +1,7 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 from Recipenext import views
 
-
-urlpatterns = [url(r"^users$", views.userApi), url(r"^users/([0-9]+)$", views.userApi)]
+urlpatterns = [
+    path("users", views.userApi),
+    re_path(r"^users/([0-9]+)$", views.userApi),
+]
